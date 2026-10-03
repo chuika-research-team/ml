@@ -1,6 +1,6 @@
 commitizen:
-  name: cz_conventional_commits
-  
+  name: cz_customize
+
   version_provider: uv
   version_scheme: pep440
   major_version_zero: true
@@ -11,3 +11,59 @@ commitizen:
   bump_message: "chore(release): v$current_version -> v$new_version"
 
   message_length_limit: 72
+
+  customize:
+    message_template: "{{change_type}}{% if scope %}({{scope}}){% endif %}{% if breaking %}!{% endif %}: {{message}}"
+    schema_pattern: '^(hyp|exp|result|data|feat|fix|perf|refactor|docs|test|ci|chore|revert)(\([\w\-\.]+\))?!?: \S.*$'
+
+    bump_pattern: '^(feat|data|fix|perf)'
+    bump_map:
+      feat: MINOR
+      data: PATCH
+      fix: PATCH
+      perf: PATCH
+
+    questions:
+      - type: list
+        name: change_type
+        message: "Тип коммита:"
+        choices:
+          - value: hyp
+            name: "hyp: формулировка гипотезы, критерий"
+          - value: exp
+            name: "exp: код/конфиг эксперимента"
+          - value: result
+            name: "result: результаты и вердикт"
+          - value: data
+            name: "data: версия данных, препроцессинг"
+          - value: feat
+            name: "feat: подтверждённое улучшение (в main)"
+          - value: fix
+            name: "fix: баг"
+          - value: perf
+            name: "perf: ускорение без смены метрик"
+          - value: refactor
+            name: "refactor: рефакторинг"
+          - value: docs
+            name: "docs: документация"
+          - value: test
+            name: "test: тесты"
+          - value: ci
+            name: "ci: CI/CD"
+          - value: chore
+            name: "chore: прочее"
+          - value: revert
+            name: "revert: откат"
+
+      - type: input
+        name: scope
+        message: "Scope (ID гипотезы, например H012, или область; можно пусто):"
+
+      - type: confirm
+        name: breaking
+        message: "Breaking change?"
+        default: false
+
+      - type: input
+        name: message
+        message: "Описание:"
